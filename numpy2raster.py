@@ -6,7 +6,7 @@ import matplotlib.pylab as plt
 import h5py
 import os
 
-files = os.listdir("GAERO_VAOOO*")
+files = os.listdir("GAERO-VAOOO*")
 for file in files:
   timeBFile = file.split("_")[3]
   f = h5py.File(file,'r')
