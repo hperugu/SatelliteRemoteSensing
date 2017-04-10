@@ -12,7 +12,7 @@ for file in files:
   f = h5py.File(file,'r')
 
   # My image array  
-  array = np.array(f['All_Data']['VIIRS-Aeros-EDR_All']['
+  array = np.array(f['All_Data']['VIIRS-Aeros-EDR_All']['AerosolOpticalDepth_at_550nm'])
   lat = np.array(f['All_Data']['VIIRS-Aeros-EDR-GEO_All']['Longitude'])
   lon = np.array(f['All_Data']['VIIRS-Aeros-EDR-GEO_All']['Longitude'])
   # For each pixel I know it's latitude and longitude.
