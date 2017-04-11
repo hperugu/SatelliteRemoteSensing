@@ -1,0 +1,37 @@
+#Notes on the smoke2tile.py Utility
+
+
+##Purpose:
+
+The goal of this utility is to create quick, diagnostic tile plots for SMOKE inputs and outputs
+
+##History:
+
+This utility was originally developed by DJ Rasmussen in 2014. It worked, but there was a desire for it to be faster.
+
+###Major Revision # 1
+
+In July, 2014, the code was heavily revised by John Stilley, with the primary goal of improving performance. A simple list of changes follows:
+
+####Changes for Speed:
+
+1. Changed `Basemap` resolution from `l` to `c`.
+2. Switched from using `pickle` library to `cPickle` library.
+3. Removed unnecessary drawing commands: `drawcoastlines()`, `drawcountries()`, `drawstates()`.
+4. Used the `readshapefiles()` method on `Basemap` to import a lighter background layer, to display only the counties in California.
+5. Reduce the DPI of the output images from 400 to 300.
+6. Reduced the lat/lon display area of the output grid. There was a lot of dead space outside of California in the plots. This space is not necessary, and causes a lot of slow-down.
+7. Stop re-creating the `Basemap` for every file. I just pass in the old `Basemap` when a new plot is made.
+8. Used the `fig.clf()` command after every plot is made, so all of the old plots aren't kept in memory.
+
+####Cleanup Changes, not for Speed:
+
+1. removed all global variables
+2. removed all of the unused `category` descriptions
+3. rename `fil` variable name, as it was confusing
+4. `map` keyword is reserved, changed to `mp`
+5. `type` keyword is reserved, changed to `source_type`
+6. created several helper methods, to make the code easier to read
+7. created a class, to help organize the code, and remove global variables, that were problematic
+8. "Could not find species "... should be a nice list, like the found species 
+
