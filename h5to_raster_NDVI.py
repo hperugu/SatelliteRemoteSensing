@@ -172,64 +172,8 @@ def geoTiff_NDVI(gridLat,gridLon,gridData,lat_0,lon_0,ModeGran):
     yres = (ymax-ymin)/float(nrows)
     geotransform = (xmin,xres,0,ymax,0, -yres)
     # That's (top left x, w-e pixel resolution, rotation (0 if North is up),top left y, rotation (0 if North is up), n-s pixel resolution)
-    output_raster = gdal.GetDriverByName('GTiff').Create(tempfile+'.tif',ncols, nrows, 1 ,gdal.GDT_Float32)  # Open the file
-           for fillType in trimObj.sdrTypeFill.keys() :
-            if ndviFillMasks[fillType] is not None :
-                fillMask = fillMask * ma.array(np.zeros(ndviArr.shape,dtype=np.bool),\
-                    mask=ndviFillMasks[fillType])
-
-        # Unscale the NDVI dataset
-        ndviArr =  ndviArr * viirsVIObj.viFactors[0] + viirsVIObj.viFactors[1]
-
-        # Define some masks...
-        #fillMask = ma.masked_less(ndviArr,-800.).mask
-
-        VIlandWaterFlag = np.bitwise_and(qf2Arr[:,:],7) >> 0
-        VIlandWaterMask = ma.masked_greater(VIlandWaterFlag,1).mask
-
-        VIcldConfFlag = np.bitwise_and(qf2Arr[:,:],24) >> 3
-        VIcldConfMask = ma.masked_not_equal(VIcldConfFlag,0).mask
-
-        #NDVIqualFlag = np.bitwise_and(qf1Arr,3) >> 0
-        #ndviQualMask = ma.masked_equal(NDVIqualFlag,0).mask
-
-        # Combine the fill mask and quality masks...
-        #totalMask = fillMask.mask
-        totalMask = fillMask.mask + VIlandWaterMask + VIcldConfMask
-        #totalMask = fillMask.mask + ndviQualMask
-        #totalMask = np.zeros(ndviArr.shape,dtype=np.bool)
-
-        try :
-            data = ma.array(ndviArr,mask=totalMask)
-            lats = ma.array(latArr,mask=totalMask)
-            lons = ma.array(lonArr,mask=totalMask)
-        except ma.core.MaskError :
-            print(">> error: Mask Error, probably mismatched geolocation and product array sizes, aborting...")
-            traceback.print_exc(file=sys.stdout)
-            sys.exit(1)
-
-    except Exception, err :
-        print(">> error: {}...".format(str(err)))
-        traceback.print_exc(file=sys.stdout)
-        sys.exit(1)
-
-    print("gran_NDVI ModeGran = ",ModeGran)
-
-    return lats,lons,data,lat_0,lon_0,ModeGran
-
-def geoTiff_NDVI(gridLat,gridLon,gridData,lat_0,lon_0,ModeGran):
-    '''
-    Plots the VIIRS Normalised Vegetation Index as raster
-    '''
-    tempfile= 'd20171024'
-    xmin,ymin,xmax,ymax = [gridLon.min(),gridLat.min(),gridLon.max(),gridLat.max()]
-    nrows,ncols = np.shape(gridData)
-    xres = (xmax-xmin)/float(ncols)
-    yres = (ymax-ymin)/float(nrows)
-    geotransform = (xmin,xres,0,ymax,0, -yres)
-    # That's (top left x, w-e pixel resolution, rotation (0 if North is up),top left y, rotation (0 if North is up), n-s pixel resolution)
-    output_raster = gdal.GetDriverByName('GTiff').Create(tempfile+'.tif',ncols, nrows, 1 ,gdal.GDT_Float32)  # Open the file
-        output_raster.GetRasterBand(1).WriteArray( gridData )
+    output_raster = gdal.GetDriverByName('GTiff').Create(tempfile+'.tif',ncols, nrows, 1 ,gdal.GDT_Float32)  # Open the file 
+    output_raster.GetRasterBand(1).WriteArray( gridData )
     band = output_raster.GetRasterBand(1)
     band.FlushCache()
     srs = osr.SpatialReference()
